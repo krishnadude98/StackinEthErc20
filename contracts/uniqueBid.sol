@@ -22,9 +22,9 @@ contract uniqueBid {
         offset = _offset;
     }
 
-    function setRange(uint8 _lower, uint8 _upper) public onlyOwner isGameEnded {
-        lowerRange = _lower;
-        upperRange = _upper;
+    function setRange(uint8 lower, uint8 upper) public onlyOwner isGameEnded {
+        lowerRange = lower;
+        upperRange = upper;
     }
 
     function stopGame() public onlyOwner isGameEnded {
@@ -62,6 +62,10 @@ contract uniqueBid {
             }
         }
         revert("No unique bid");
+    }
+
+    function bidStatus(address account) public view returns (bool) {
+        return bidders[account].isbided;
     }
 
     modifier onlyOwner() {

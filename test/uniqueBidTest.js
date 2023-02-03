@@ -1,5 +1,5 @@
 const { ethers } = require("hardhat");
-const { expert, assert } = require("chai");
+const { expert, assert, expect } = require("chai");
 
 describe("Unique bid", function () {
     let uniqueBidFactory, uniqueBid;
@@ -18,6 +18,17 @@ describe("Unique bid", function () {
         await uniqueBid.connect(p1).pickWinner();
         let winner = await uniqueBid.winner();
         assert.equal(winner, p2.address);
+    });
+
+    it("No winner case ", async function () {
+        const value = await uniqueBid.owner();
+        await uniqueBid.connect(p2).makeBid(8);
+        await uniqueBid.connect(p3).makeBid(8);
+        await uniqueBid.connect(p1).stopGame();
+
+        await expect(uniqueBid.connect(p1).pickWinner()).to.be.revertedWith(
+            "No unique bid"
+        );
     });
 
     it("Lists player choices", async function () {

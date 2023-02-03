@@ -6,7 +6,8 @@ async function main() {
     const uniqueBid = await uniqueBidFactory.deploy(process.env.OFFSET);
     await uniqueBid.deployed();
     console.log(`Deployed contract address: ${uniqueBid.address}`);
-    if (network.config.chainid === 5 && process.env.ETHERSCAN_API_KEY) {
+    console.log(network);
+    if (network.config.chainid === 80001 && process.env.POLYGON_API_KEY) {
         console.log("Waiting for block confirmations...");
         await uniqueBid.deployTransaction.wait(6);
         await verify(uniqueBid.address, [process.env.OFFSET]);
