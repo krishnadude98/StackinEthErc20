@@ -1,16 +1,21 @@
 const { ethers, run, network } = require("hardhat");
 require("dotenv").config();
 async function main() {
-    const uniqueBidFactory = await ethers.getContractFactory("uniqueBid");
-    console.log("Deploying Contract");
-    const uniqueBid = await uniqueBidFactory.deploy(process.env.OFFSET);
-    await uniqueBid.deployed();
-    console.log(`Deployed contract address: ${uniqueBid.address}`);
-    console.log(network);
-    if (network.config.chainid === 80001 && process.env.POLYGON_API_KEY) {
+    const stackingFactory = await ethers.getContractFactory("Stacking");
+    const rewardFactory = await ethers.getContractFactory("GoofyGoober");
+    console.log("Deploying Contract....");
+    const stacking = await stackingFactory.deploy();
+    await stacking.deployed();
+    const rewards = await rewardFactory.deploy(`${stacking.address}`);
+    await rewards.deployed();
+    console.log(`Deployed Stacking contract address: ${stacking.address}`);
+    console.log(`Deloyed Reward Contract address: ${rewards.address}`);
+    if (network.config.chainId === 80001 && process.env.POLYGON_API_KEY) {
         console.log("Waiting for block confirmations...");
-        await uniqueBid.deployTransaction.wait(6);
-        await verify(uniqueBid.address, [process.env.OFFSET]);
+        await stacking.deployTransaction.wait(6);
+        await verify(stacking.address, []);
+        await rewards.deployTransaction.wait(6);
+        await verify(stacking.address, [stacking.address]);
     }
 }
 
